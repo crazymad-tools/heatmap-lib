@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>webgl</title>
+    <script src="webgl.js"></script>
+    <style>
+      canvas {
+        border: 1px solid black;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas" width="800" height="600"></canvas>
+    <script>
+      window.onload = async () => {
+        const vertex_source = await fetch("shader/basic.vert").then((res) =>
+          res.text()
+        );
+        const fragment_source = await fetch("shader/basic.frag").then((res) =>
+          res.text()
+        );
+
+        const webgl = new WebglBasic(document.getElementById("canvas"));
+
+        webgl.createProgram(vertex_source, fragment_source);
+        webgl.render();
+      };
+    </script>
+  </body>
+</html>

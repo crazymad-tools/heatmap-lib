@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <script src="../lib/WebglProgram.js"></script>
+    <script src="../HeatmapGL.js"></script>
+    <style>
+      canvas {
+        border: 1px solid black;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas
+      id="canvas"
+      width="900"
+      height="600"
+      onmousemove="addMouse"
+    ></canvas>
+
+    <script>
+      function createRandomData() {
+        const data = [];
+        for (let i = 0; i < 100; i++) {
+          data.push({
+            x: Math.random(),
+            y: Math.random(),
+            weight: Math.random() * 10,
+          });
+        }
+
+        return data;
+      }
+
+      function addMouse(e) {
+        console.log(e);
+      }
+
+      window.onload = async () => {
+        window.map = new HeatmapGL(
+          document.getElementById("canvas"),
+          createRandomData(),
+          {
+            max: 10,
+            min: 0,
+          }
+        );
+
+        const vertext_source = await fetch("../heatmap.vert").then((res) =>
+          res.text()
+        );
+        const fragment_source = await fetch("../heatmap.frag").then((res) =>
+          res.text()
+        );
+
+        const shadowProgram = new ShadowProgram(window.map.gl);
+        shadowProgram.createProgram(vertext_source, fragment_source);
+
+        window.map.init().then(() => {
+          window.map.draw();
+          setInterval(() => {
+            map.data = map.data.concat(createRandomData());
+            map.draw();
+          }, 1000);
+        });
+      };
+    </script>
+  </body>
+</html>
