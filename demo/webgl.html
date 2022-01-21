@@ -53,16 +53,19 @@
           res.text()
         );
 
+        console.log("vertext_source:", vertext_source);
+        console.log("fragment_source:", fragment_source);
+
         const shadowProgram = new ShadowProgram(window.map.gl);
         shadowProgram.createProgram(vertext_source, fragment_source);
 
-        window.map.init().then(() => {
-          window.map.draw();
+        shadowProgram.circle.onload = () => {
+          window.map.addProgram(shadowProgram);
+
           setInterval(() => {
-            map.data = map.data.concat(createRandomData());
-            map.draw();
-          }, 1000);
-        });
+            window.map.render();
+          }, 1000 / 60);
+        };
       };
     </script>
   </body>
